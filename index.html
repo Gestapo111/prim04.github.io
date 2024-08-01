@@ -1,1 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluación: La Termodinámica (Física)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #333;
+        }
+        .quiz-container {
+            background-color: #fff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 800px;
+        }
+        .question {
+            margin-bottom: 15px;
+        }
+        .options {
+            list-style-type: none;
+            padding: 0;
+        }
+        .options li {
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #results {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            width: 100%;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Evaluación: La Termodinámica (Física)</h1>
+    <div class="quiz-container">
+        <div id="quiz"></div>
+        <button id="submit">Enviar respuestas</button>
+        <div id="results"></div>
+    </div>
+    <footer>
+        &copy; Derechos Reservados Prof. Alberto Sanchez
+    </footer>
+    <script>
+        const quizData = [
+            {
+                question: "¿Qué es la termodinámica?",
+                answers: [
+                    { text: "El estudio de la energía y sus transformaciones.", correct: true },
+                    { text: "El estudio de los cuerpos en movimiento.", correct: false },
+                    { text: "El estudio de las fuerzas y sus efectos.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué establece la primera ley de la termodinámica?",
+                answers: [
+                    { text: "La energía no se crea ni se destruye, solo se transforma.", correct: true },
+                    { text: "La entropía de un sistema siempre aumenta.", correct: false },
+                    { text: "La temperatura de un objeto siempre aumenta.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué es la energía interna?",
+                answers: [
+                    { text: "La energía total de las partículas que componen un sistema.", correct: true },
+                    { text: "La energía cinética de un objeto en movimiento.", correct: false },
+                    { text: "La energía potencial de un objeto en reposo.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué es el calor?",
+                answers: [
+                    { text: "La transferencia de energía debido a una diferencia de temperatura.", correct: true },
+                    { text: "La energía almacenada en un objeto.", correct: false },
+                    { text: "La energía cinética de un objeto en movimiento.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué es la temperatura?",
+                answers: [
+                    { text: "Una medida de la energía cinética promedio de las partículas de un objeto.", correct: true },
+                    { text: "Una medida de la energía potencial de un objeto.", correct: false },
+                    { text: "Una medida de la energía interna de un sistema.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué es la entropía?",
+                answers: [
+                    { text: "Una medida del desorden o la aleatoriedad en un sistema.", correct: true },
+                    { text: "Una medida de la energía total en un sistema.", correct: false },
+                    { text: "Una medida de la energía potencial en un sistema.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué establece la segunda ley de la termodinámica?",
+                answers: [
+                    { text: "La entropía de un sistema aislado siempre aumenta con el tiempo.", correct: true },
+                    { text: "La energía no se crea ni se destruye, solo se transforma.", correct: false },
+                    { text: "La temperatura de un objeto siempre aumenta.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué es una máquina térmica?",
+                answers: [
+                    { text: "Un dispositivo que convierte energía térmica en trabajo mecánico.", correct: true },
+                    { text: "Un dispositivo que mide la temperatura.", correct: false },
+                    { text: "Un dispositivo que almacena energía.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué es el ciclo de Carnot?",
+                answers: [
+                    { text: "Un ciclo teórico que describe el funcionamiento ideal de una máquina térmica.", correct: true },
+                    { text: "Un ciclo que describe la evaporación de líquidos.", correct: false },
+                    { text: "Un ciclo que describe la compresión de gases.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué es la eficiencia térmica?",
+                answers: [
+                    { text: "La relación entre el trabajo realizado y el calor absorbido en un ciclo termodinámico.", correct: true },
+                    { text: "La cantidad de calor absorbido por un sistema.", correct: false },
+                    { text: "La cantidad de trabajo realizado por un sistema.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué es la conducción térmica?",
+                answers: [
+                    { text: "La transferencia de calor a través de un material sin movimiento del material en sí.", correct: true },
+                    { text: "La transferencia de calor a través del movimiento de un fluido.", correct: false },
+                    { text: "La transferencia de calor a través de la radiación electromagnética.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué es la convección?",
+                answers: [
+                    { text: "La transferencia de calor a través del movimiento de un fluido.", correct: true },
+                    { text: "La transferencia de calor a través de un material sólido.", correct: false },
+                    { text: "La transferencia de calor a través de la radiación electromagnética.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué es la radiación térmica?",
+                answers: [
+                    { text: "La transferencia de calor a través de la emisión de ondas electromagnéticas.", correct: true },
+                    { text: "La transferencia de calor a través de un material sólido.", correct: false },
+                    { text: "La transferencia de calor a través del movimiento de un fluido.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué es la capacidad calorífica?",
+                answers: [
+                    { text: "La cantidad de calor necesaria para cambiar la temperatura de un objeto en una unidad de temperatura.", correct: true },
+                    { text: "La cantidad de calor necesaria para derretir un objeto.", correct: false },
+                    { text: "La cantidad de calor necesaria para evaporar un líquido.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué es el calor específico?",
+                answers: [
+                    { text: "La cantidad de calor necesaria para cambiar la temperatura de una unidad de masa de una sustancia en una unidad de temperatura.", correct: true },
+                    { text: "La cantidad de calor necesaria para derretir una sustancia.", correct: false },
+                    { text: "La cantidad de calor necesaria para evaporar una sustancia.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué es el punto de fusión?",
+                answers: [
+                    { text: "La temperatura a la cual una sustancia cambia de sólido a líquido.", correct: true },
+                    { text: "La temperatura a la cual una sustancia cambia de líquido a gas.", correct: false },
+                    { text: "La temperatura a la cual una sustancia cambia de gas a sólido.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué es el punto de ebullición?",
+                answers: [
+                    { text: "La temperatura a la cual una sustancia cambia de líquido a gas.", correct: true },
+                    { text: "La temperatura a la cual una sustancia cambia de sólido a líquido.", correct: false },
+                    { text: "La temperatura a la cual una sustancia cambia de gas a sólido.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué es la sublimación?",
+                answers: [
+                    { text: "El cambio de estado de sólido a gas sin pasar por el estado líquido.", correct: true },
+                    { text: "El cambio de estado de líquido a gas.", correct: false },
+                    { text: "El cambio de estado de gas a sólido.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué es la condensación?",
+                answers: [
+                    { text: "El cambio de estado de gas a líquido.", correct: true },
+                    { text: "El cambio de estado de líquido a gas.", correct: false },
+                    { text: "El cambio de estado de sólido a gas.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué es la deposición?",
+                answers: [
+                    { text: "El cambio de estado de gas a sólido sin pasar por el estado líquido.", correct: true },
+                    { text: "El cambio de estado de sólido a líquido.", correct: false },
+                    { text: "El cambio de estado de líquido a gas.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué es el calor latente?",
+                answers: [
+                    { text: "La cantidad de calor necesaria para cambiar el estado de una sustancia sin cambiar su temperatura.", correct: true },
+                    { text: "La cantidad de calor necesaria para cambiar la temperatura de una sustancia.", correct: false },
+                    { text: "La cantidad de calor necesaria para derretir una sustancia.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué es un sistema cerrado en termodinámica?",
+                answers: [
+                    { text: "Un sistema que no intercambia materia con su entorno, pero puede intercambiar energía.", correct: true },
+                    { text: "Un sistema que intercambia materia y energía con su entorno.", correct: false },
+                    { text: "Un sistema que no intercambia ni materia ni energía con su entorno.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué es un sistema aislado en termodinámica?",
+                answers: [
+                    { text: "Un sistema que no intercambia ni materia ni energía con su entorno.", correct: true },
+                    { text: "Un sistema que intercambia energía pero no materia con su entorno.", correct: false },
+                    { text: "Un sistema que intercambia materia pero no energía con su entorno.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué es un sistema abierto en termodinámica?",
+                answers: [
+                    { text: "Un sistema que intercambia materia y energía con su entorno.", correct: true },
+                    { text: "Un sistema que no intercambia materia con su entorno, pero puede intercambiar energía.", correct: false },
+                    { text: "Un sistema que no intercambia ni materia ni energía con su entorno.", correct: false }
+                ]
+            },
+            {
+                question: "¿Qué es el equilibrio térmico?",
+                answers: [
+                    { text: "La condición en la cual dos cuerpos en contacto térmico alcanzan la misma temperatura.", correct: true },
+                    { text: "La condición en la cual un cuerpo sigue ganando calor.", correct: false },
+                    { text: "La condición en la cual un cuerpo sigue perdiendo calor.", correct: false }
+                ]
+            }
+        ];
+
+        let attempt = 0;
+        const maxAttempts = 3;
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function loadQuiz() {
+            const quizContainer = document.getElementById('quiz');
+            quizContainer.innerHTML = '';
+            quizData.forEach((data, index) => {
+                const questionContainer = document.createElement('div');
+                questionContainer.className = 'question';
+
+                const questionTitle = document.createElement('h3');
+                questionTitle.innerText = `${index + 1}. ${data.question}`;
+                questionContainer.appendChild(questionTitle);
+
+                const optionsList = document.createElement('ul');
+                optionsList.className = 'options';
+
+                shuffle(data.answers).forEach(answer => {
+                    const option = document.createElement('li');
+                    const optionLabel = document.createElement('label');
+                    const optionInput = document.createElement('input');
+                    optionInput.type = 'radio';
+                    optionInput.name = `question${index}`;
+                    optionInput.value = answer.correct;
+                    optionLabel.appendChild(optionInput);
+                    optionLabel.appendChild(document.createTextNode(answer.text));
+                    option.appendChild(optionLabel);
+                    optionsList.appendChild(option);
+                });
+
+                questionContainer.appendChild(optionsList);
+                quizContainer.appendChild(questionContainer);
+            });
+        }
+
+        function submitQuiz() {
+            if (attempt >= maxAttempts) {
+                alert('Has alcanzado el número máximo de intentos.');
+                return;
+            }
+
+            const resultsContainer = document.getElementById('results');
+            const answers = document.querySelectorAll('input[type="radio"]:checked');
+            let score = 0;
+
+            quizData.forEach((data, index) => {
+                const selected = answers[index] ? answers[index].value === 'true' : null;
+                if (selected === true) {
+                    score += 0.4; // Each correct answer is worth 0.4 points
+                }
+            });
+
+            score = Math.round(score * 10) / 10; // Round to one decimal place
+            let feedback = quizData.map((data, index) => {
+                const selected = answers[index] ? answers[index].value === 'true' : null;
+                let result;
+                if (selected === null) {
+                    result = "No contestada";
+                } else if (selected === true) {
+                    result = "Correcta";
+                } else {
+                    result = "Incorrecta";
+                }
+                return `<p>${index + 1}. ${result}</p>`;
+            }).join("");
+
+            resultsContainer.innerHTML = `<h3>Resultados:</h3><p>Puntaje: ${score} / 10</p>${feedback}`;
+
+            attempt++;
+            if (attempt >= maxAttempts) {
+                alert('Has alcanzado el número máximo de intentos.');
+            }
+        }
+
+        document.getElementById('submit').addEventListener('click', submitQuiz);
+
+        loadQuiz();
+    </script>
+</body>
+</html>
 
