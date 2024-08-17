@@ -3,366 +3,613 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Evaluación: La Termodinámica (Física)</title>
+    <title>Unidad 4: La Termodinámica</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        h1 {
-            color: #333;
-        }
-        .quiz-container {
-            background-color: #fff;
             padding: 20px;
-            margin: 20px 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 80%;
-            max-width: 800px;
+        }
+        h1, h2 {
+            text-align: center;
         }
         .question {
-            margin-bottom: 15px;
+            margin: 20px 0;
         }
-        .options {
-            list-style-type: none;
-            padding: 0;
-        }
-        .options li {
+        .question label {
+            font-weight: bold;
+            display: block;
             margin-bottom: 10px;
         }
-        button {
+        .question .options {
+            margin-left: 20px;
+        }
+        .question .options input {
+            margin-right: 10px;
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+        }
+        .popup-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+        .popup-content input {
+            margin-bottom: 20px;
+            padding: 15px;
+            width: 80%;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .popup-content button {
+            padding: 15px 30px;
             background-color: #28a745;
             color: #fff;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
             font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
-        button:hover {
-            background-color: #218838;
-        }
-        #results {
-            margin-top: 20px;
-            font-size: 18px;
-        }
-        footer {
-            background-color: #333;
+        button.submit-btn {
+            padding: 15px 30px;
+            background-color: #007bff;
             color: #fff;
-            padding: 10px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            display: block;
             width: 100%;
             text-align: center;
-            position: fixed;
-            bottom: 0;
+        }
+        button.submit-btn:hover {
+            background-color: #0056b3;
+        }
+        #timer {
+            text-align: center;
+            font-size: 20px;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Evaluación: La Termodinámica (Física)</h1>
-    <div class="quiz-container">
-        <div id="quiz"></div>
-        <button id="submit">Enviar respuestas</button>
-        <div id="results"></div>
+
+<div class="popup" id="popup">
+    <div class="popup-content">
+        <h2>Complete la siguiente información</h2>
+        <input type="text" id="nombre" placeholder="Nombre Completo" required>
+        <input type="text" id="nie" placeholder="NIE" required>
+        <button onclick="validatePopup()">Continuar</button>
     </div>
-    <footer>
-        &copy; Derechos Reservados Prof. Alberto Sanchez
-    </footer>
-    <script>
-        const quizData = [
-            {
-                question: "¿Qué es la termodinámica?",
-                answers: [
-                    { text: "El estudio de la energía y sus transformaciones.", correct: true },
-                    { text: "El estudio de los cuerpos en movimiento.", correct: false },
-                    { text: "El estudio de las fuerzas y sus efectos.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué establece la primera ley de la termodinámica?",
-                answers: [
-                    { text: "La energía no se crea ni se destruye, solo se transforma.", correct: true },
-                    { text: "La entropía de un sistema siempre aumenta.", correct: false },
-                    { text: "La temperatura de un objeto siempre aumenta.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué es la energía interna?",
-                answers: [
-                    { text: "La energía total de las partículas que componen un sistema.", correct: true },
-                    { text: "La energía cinética de un objeto en movimiento.", correct: false },
-                    { text: "La energía potencial de un objeto en reposo.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué es el calor?",
-                answers: [
-                    { text: "La transferencia de energía debido a una diferencia de temperatura.", correct: true },
-                    { text: "La energía almacenada en un objeto.", correct: false },
-                    { text: "La energía cinética de un objeto en movimiento.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué es la temperatura?",
-                answers: [
-                    { text: "Una medida de la energía cinética promedio de las partículas de un objeto.", correct: true },
-                    { text: "Una medida de la energía potencial de un objeto.", correct: false },
-                    { text: "Una medida de la energía interna de un sistema.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué es la entropía?",
-                answers: [
-                    { text: "Una medida del desorden o la aleatoriedad en un sistema.", correct: true },
-                    { text: "Una medida de la energía total en un sistema.", correct: false },
-                    { text: "Una medida de la energía potencial en un sistema.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué establece la segunda ley de la termodinámica?",
-                answers: [
-                    { text: "La entropía de un sistema aislado siempre aumenta con el tiempo.", correct: true },
-                    { text: "La energía no se crea ni se destruye, solo se transforma.", correct: false },
-                    { text: "La temperatura de un objeto siempre aumenta.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué es una máquina térmica?",
-                answers: [
-                    { text: "Un dispositivo que convierte energía térmica en trabajo mecánico.", correct: true },
-                    { text: "Un dispositivo que mide la temperatura.", correct: false },
-                    { text: "Un dispositivo que almacena energía.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué es el ciclo de Carnot?",
-                answers: [
-                    { text: "Un ciclo teórico que describe el funcionamiento ideal de una máquina térmica.", correct: true },
-                    { text: "Un ciclo que describe la evaporación de líquidos.", correct: false },
-                    { text: "Un ciclo que describe la compresión de gases.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué es la eficiencia térmica?",
-                answers: [
-                    { text: "La relación entre el trabajo realizado y el calor absorbido en un ciclo termodinámico.", correct: true },
-                    { text: "La cantidad de calor absorbido por un sistema.", correct: false },
-                    { text: "La cantidad de trabajo realizado por un sistema.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué es la conducción térmica?",
-                answers: [
-                    { text: "La transferencia de calor a través de un material sin movimiento del material en sí.", correct: true },
-                    { text: "La transferencia de calor a través del movimiento de un fluido.", correct: false },
-                    { text: "La transferencia de calor a través de la radiación electromagnética.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué es la convección?",
-                answers: [
-                    { text: "La transferencia de calor a través del movimiento de un fluido.", correct: true },
-                    { text: "La transferencia de calor a través de un material sólido.", correct: false },
-                    { text: "La transferencia de calor a través de la radiación electromagnética.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué es la radiación térmica?",
-                answers: [
-                    { text: "La transferencia de calor a través de la emisión de ondas electromagnéticas.", correct: true },
-                    { text: "La transferencia de calor a través de un material sólido.", correct: false },
-                    { text: "La transferencia de calor a través del movimiento de un fluido.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué es la capacidad calorífica?",
-                answers: [
-                    { text: "La cantidad de calor necesaria para cambiar la temperatura de un objeto en una unidad de temperatura.", correct: true },
-                    { text: "La cantidad de calor necesaria para derretir un objeto.", correct: false },
-                    { text: "La cantidad de calor necesaria para evaporar un líquido.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué es el calor específico?",
-                answers: [
-                    { text: "La cantidad de calor necesaria para cambiar la temperatura de una unidad de masa de una sustancia en una unidad de temperatura.", correct: true },
-                    { text: "La cantidad de calor necesaria para derretir una sustancia.", correct: false },
-                    { text: "La cantidad de calor necesaria para evaporar una sustancia.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué es el punto de fusión?",
-                answers: [
-                    { text: "La temperatura a la cual una sustancia cambia de sólido a líquido.", correct: true },
-                    { text: "La temperatura a la cual una sustancia cambia de líquido a gas.", correct: false },
-                    { text: "La temperatura a la cual una sustancia cambia de gas a sólido.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué es el punto de ebullición?",
-                answers: [
-                    { text: "La temperatura a la cual una sustancia cambia de líquido a gas.", correct: true },
-                    { text: "La temperatura a la cual una sustancia cambia de sólido a líquido.", correct: false },
-                    { text: "La temperatura a la cual una sustancia cambia de gas a sólido.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué es la sublimación?",
-                answers: [
-                    { text: "El cambio de estado de sólido a gas sin pasar por el estado líquido.", correct: true },
-                    { text: "El cambio de estado de líquido a gas.", correct: false },
-                    { text: "El cambio de estado de gas a sólido.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué es la condensación?",
-                answers: [
-                    { text: "El cambio de estado de gas a líquido.", correct: true },
-                    { text: "El cambio de estado de líquido a gas.", correct: false },
-                    { text: "El cambio de estado de sólido a gas.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué es la deposición?",
-                answers: [
-                    { text: "El cambio de estado de gas a sólido sin pasar por el estado líquido.", correct: true },
-                    { text: "El cambio de estado de sólido a líquido.", correct: false },
-                    { text: "El cambio de estado de líquido a gas.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué es el calor latente?",
-                answers: [
-                    { text: "La cantidad de calor necesaria para cambiar el estado de una sustancia sin cambiar su temperatura.", correct: true },
-                    { text: "La cantidad de calor necesaria para cambiar la temperatura de una sustancia.", correct: false },
-                    { text: "La cantidad de calor necesaria para derretir una sustancia.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué es un sistema cerrado en termodinámica?",
-                answers: [
-                    { text: "Un sistema que no intercambia materia con su entorno, pero puede intercambiar energía.", correct: true },
-                    { text: "Un sistema que intercambia materia y energía con su entorno.", correct: false },
-                    { text: "Un sistema que no intercambia ni materia ni energía con su entorno.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué es un sistema aislado en termodinámica?",
-                answers: [
-                    { text: "Un sistema que no intercambia ni materia ni energía con su entorno.", correct: true },
-                    { text: "Un sistema que intercambia energía pero no materia con su entorno.", correct: false },
-                    { text: "Un sistema que intercambia materia pero no energía con su entorno.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué es un sistema abierto en termodinámica?",
-                answers: [
-                    { text: "Un sistema que intercambia materia y energía con su entorno.", correct: true },
-                    { text: "Un sistema que no intercambia materia con su entorno, pero puede intercambiar energía.", correct: false },
-                    { text: "Un sistema que no intercambia ni materia ni energía con su entorno.", correct: false }
-                ]
-            },
-            {
-                question: "¿Qué es el equilibrio térmico?",
-                answers: [
-                    { text: "La condición en la cual dos cuerpos en contacto térmico alcanzan la misma temperatura.", correct: true },
-                    { text: "La condición en la cual un cuerpo sigue ganando calor.", correct: false },
-                    { text: "La condición en la cual un cuerpo sigue perdiendo calor.", correct: false }
-                ]
-            }
-        ];
+</div>
 
-        let attempt = 0;
-        const maxAttempts = 3;
+<div class="container" id="evaluation" style="display:none;">
+    <h1>Unidad 4: La Termodinámica</h1>
+    <div id="timer">Tiempo restante: 30:00</div>
 
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
+    <!-- Indicador 4.1 -->
+    <h2>Indicador 4.1: Equilibrio térmico</h2>
+    <div class="question">
+        <label>1. ¿Qué es el equilibrio térmico?</label>
+        <div class="options">
+            <label><input type="radio" name="q1" value="correcto" required> A. Es la condición en la que dos cuerpos a diferentes temperaturas alcanzan la misma temperatura.</label><br>
+            <label><input type="radio" name="q1" value="incorrecto" required> B. Es la condición en la que un cuerpo mantiene su temperatura constante.</label><br>
+            <label><input type="radio" name="q1" value="incorrecto" required> C. Es la condición en la que un cuerpo intercambia calor sin cambiar su temperatura.</label><br>
+            <label><input type="radio" name="q1" value="incorrecto" required> D. Es la condición en la que no hay transferencia de calor entre cuerpos.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>2. Un objeto caliente se coloca en contacto con un objeto frío. ¿Qué sucede al cabo de un tiempo?</label>
+        <div class="options">
+            <label><input type="radio" name="q2" value="correcto" required> A. Ambos alcanzan la misma temperatura.</label><br>
+            <label><input type="radio" name="q2" value="incorrecto" required> B. El objeto caliente se enfría completamente y el frío se calienta.</label><br>
+            <label><input type="radio" name="q2" value="incorrecto" required> C. No ocurre ningún cambio de temperatura.</label><br>
+            <label><input type="radio" name="q2" value="incorrecto" required> D. Ambos se enfrían.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>3. ¿Por qué es importante el equilibrio térmico en la vida diaria?</label>
+        <div class="options">
+            <label><input type="radio" name="q3" value="correcto" required> A. Porque permite la estabilidad de las temperaturas en los ambientes.</label><br>
+            <label><input type="radio" name="q3" value="incorrecto" required> B. Porque evita que los objetos cambien de temperatura.</label><br>
+            <label><input type="radio" name="q3" value="incorrecto" required> C. Porque mantiene las temperaturas bajas siempre.</label><br>
+            <label><input type="radio" name="q3" value="incorrecto" required> D. Porque impide la transferencia de calor.</label>
+        </div>
+    </div>
+
+    <!-- Indicador 4.2 -->
+    <h2>Indicador 4.2: Ley Cero de la Termodinámica</h2>
+    <div class="question">
+        <label>4. ¿Qué establece la Ley Cero de la Termodinámica?</label>
+        <div class="options">
+            <label><input type="radio" name="q4" value="correcto" required> A. Si dos cuerpos están en equilibrio térmico con un tercero, también están en equilibrio térmico entre sí.</label><br>
+            <label><input type="radio" name="q4" value="incorrecto" required> B. La energía no se crea ni se destruye, solo se transforma.</label><br>
+            <label><input type="radio" name="q4" value="incorrecto" required> C. El calor fluye de cuerpos fríos a cuerpos calientes.</label><br>
+            <label><input type="radio" name="q4" value="incorrecto" required> D. La entropía de un sistema aislado siempre aumenta.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>5. ¿Cómo se puede experimentar la Ley Cero de la Termodinámica?</label>
+        <div class="options">
+            <label><input type="radio" name="q5" value="correcto" required> A. Colocando dos cuerpos en contacto con un tercero y midiendo sus temperaturas.</label><br>
+            <label><input type="radio" name="q5" value="incorrecto" required> B. Calentando un cuerpo y luego enfriándolo rápidamente.</label><br>
+            <label><input type="radio" name="q5" value="incorrecto" required> C. Observando el flujo de calor entre dos cuerpos en contacto.</label><br>
+            <label><input type="radio" name="q5" value="incorrecto" required> D. Midiendo la temperatura de un cuerpo en movimiento.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>6. ¿Qué se concluye cuando dos cuerpos no intercambian calor al estar en contacto?</label>
+        <div class="options">
+            <label><input type="radio" name="q6" value="correcto" required> A. Que están en equilibrio térmico.</label><br>
+            <label><input type="radio" name="q6" value="incorrecto" required> B. Que uno de ellos está aislado térmicamente.</label><br>
+            <label><input type="radio" name="q6" value="incorrecto" required> C. Que el sistema está en desequilibrio térmico.</label><br>
+            <label><input type="radio" name="q6" value="incorrecto" required> D. Que el sistema ha alcanzado la máxima entropía.</label>
+        </div>
+    </div>
+
+    <!-- Indicador 4.3 -->
+    <h2>Indicador 4.3: Conversión de escalas de temperatura</h2>
+    <div class="question">
+        <label>7. ¿Cuál es la equivalencia de 100 grados Celsius en la escala Fahrenheit?</label>
+        <div class="options">
+            <label><input type="radio" name="q7" value="correcto" required> A. 212°F.</label><br>
+            <label><input type="radio" name="q7" value="incorrecto" required> B. 100°F.</label><br>
+            <label><input type="radio" name="q7" value="incorrecto" required> C. 373°F.</label><br>
+            <label><input type="radio" name="q7" value="incorrecto" required> D. 180°F.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>8. ¿Cómo se convierte una temperatura de grados Kelvin a grados Celsius?</label>
+        <div class="options">
+            <label><input type="radio" name="q8" value="correcto" required> A. Restando 273.15 a la temperatura en Kelvin.</label><br>
+            <label><input type="radio" name="q8" value="incorrecto" required> B. Sumando 273.15 a la temperatura en Kelvin.</label><br>
+            <label><input type="radio" name="q8" value="incorrecto" required> C. Multiplicando la temperatura en Kelvin por 1.8.</label><br>
+            <label><input type="radio" name="q8" value="incorrecto" required> D. Dividiendo la temperatura en Kelvin entre 1.8.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>9. ¿Cuál es la equivalencia de 0 grados Celsius en la escala Kelvin?</label>
+        <div class="options">
+            <label><input type="radio" name="q9" value="correcto" required> A. 273.15 K.</label><br>
+            <label><input type="radio" name="q9" value="incorrecto" required> B. 0 K.</label><br>
+            <label><input type="radio" name="q9" value="incorrecto" required> C. 100 K.</label><br>
+            <label><input type="radio" name="q9" value="incorrecto" required> D. 373.15 K.</label>
+        </div>
+    </div>
+
+    <!-- Indicador 4.4 -->
+    <h2>Indicador 4.4: Dilatación de sólidos, líquidos y gases</h2>
+    <div class="question">
+        <label>10. ¿Qué ocurre con un sólido cuando se calienta?</label>
+        <div class="options">
+            <label><input type="radio" name="q10" value="correcto" required> A. Se dilata.</label><br>
+            <label><input type="radio" name="q10" value="incorrecto" required> B. Se contrae.</label><br>
+            <label><input type="radio" name="q10" value="incorrecto" required> C. Se convierte en líquido.</label><br>
+            <label><input type="radio" name="q10" value="incorrecto" required> D. Pierde masa.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>11. ¿Cuál es el efecto del calor en los gases?</label>
+        <div class="options">
+            <label><input type="radio" name="q11" value="correcto" required> A. Se expanden al aumentar la temperatura.</label><br>
+            <label><input type="radio" name="q11" value="incorrecto" required> B. Se contraen al aumentar la temperatura.</label><br>
+            <label><input type="radio" name="q11" value="incorrecto" required> C. Permanecen inalterados al aumentar la temperatura.</label><br>
+            <label><input type="radio" name="q11" value="incorrecto" required> D. Se convierten en líquidos.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>12. ¿Qué efecto tiene el calor en los líquidos?</label>
+        <div class="options">
+            <label><input type="radio" name="q12" value="correcto" required> A. Se expanden ligeramente al calentarse.</label><br>
+            <label><input type="radio" name="q12" value="incorrecto" required> B. Se contraen significativamente al calentarse.</label><br>
+            <label><input type="radio" name="q12" value="incorrecto" required> C. Se convierten en sólidos al calentarse.</label><br>
+            <label><input type="radio" name="q12" value="incorrecto" required> D. No sufren ningún cambio al calentarse.</label>
+        </div>
+    </div>
+
+    <!-- Indicador 4.5 -->
+    <h2>Indicador 4.5: Transferencia de calor en los cambios de fase</h2>
+    <div class="question">
+        <label>13. ¿Qué ocurre durante el proceso de fusión?</label>
+        <div class="options">
+            <label><input type="radio" name="q13" value="correcto" required> A. Un sólido se convierte en líquido al absorber calor.</label><br>
+            <label><input type="radio" name="q13" value="incorrecto" required> B. Un líquido se convierte en sólido al absorber calor.</label><br>
+            <label><input type="radio" name="q13" value="incorrecto" required> C. Un gas se convierte en líquido al absorber calor.</label><br>
+            <label><input type="radio" name="q13" value="incorrecto" required> D. Un líquido se convierte en gas al absorber calor.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>14. ¿Qué ocurre durante la evaporación?</label>
+        <div class="options">
+            <label><input type="radio" name="q14" value="correcto" required> A. Un líquido se convierte en gas al absorber calor.</label><br>
+            <label><input type="radio" name="q14" value="incorrecto" required> B. Un gas se convierte en líquido al absorber calor.</label><br>
+            <label><input type="radio" name="q14" value="incorrecto" required> C. Un sólido se convierte en líquido al absorber calor.</label><br>
+            <label><input type="radio" name="q14" value="incorrecto" required> D. Un líquido se convierte en sólido al absorber calor.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>15. ¿Qué se requiere para que ocurra la solidificación?</label>
+        <div class="options">
+            <label><input type="radio" name="q15" value="correcto" required> A. La liberación de calor por parte de un líquido.</label><br>
+            <label><input type="radio" name="q15" value="incorrecto" required> B. La absorción de calor por parte de un sólido.</label><br>
+            <label><input type="radio" name="q15" value="incorrecto" required> C. La liberación de calor por parte de un gas.</label><br>
+            <label><input type="radio" name="q15" value="incorrecto" required> D. La absorción de calor por parte de un líquido.</label>
+        </div>
+    </div>
+
+    <!-- Indicador 4.6 -->
+    <h2>Indicador 4.6: Gases Ideales</h2>
+    <div class="question">
+        <label>16. ¿Qué es un gas ideal?</label>
+        <div class="options">
+            <label><input type="radio" name="q16" value="correcto" required> A. Es un gas hipotético que sigue exactamente la ecuación de estado PV=nRT.</label><br>
+            <label><input type="radio" name="q16" value="incorrecto" required> B. Es un gas real que se comporta perfectamente bajo todas las condiciones.</label><br>
+            <label><input type="radio" name="q16" value="incorrecto" required> C. Es un gas que no ocupa volumen ni tiene masa.</label><br>
+            <label><input type="radio" name="q16" value="incorrecto" required> D. Es un gas que no intercambia calor con su entorno.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>17. ¿Cuál de las siguientes no es una característica de los gases ideales?</label>
+        <div class="options">
+            <label><input type="radio" name="q17" value="correcto" required> A. Sus partículas tienen volumen significativo.</label><br>
+            <label><input type="radio" name="q17" value="incorrecto" required> B. Sus partículas no interactúan entre sí.</label><br>
+            <label><input type="radio" name="q17" value="incorrecto" required> C. Sus partículas están en constante movimiento.</label><br>
+            <label><input type="radio" name="q17" value="incorrecto" required> D. Ocurren colisiones elásticas entre sus partículas.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>18. ¿Qué significa que un gas siga la ecuación PV=nRT?</label>
+        <div class="options">
+            <label><input type="radio" name="q18" value="correcto" required> A. Que su presión, volumen y temperatura están relacionados de manera predecible.</label><br>
+            <label><input type="radio" name="q18" value="incorrecto" required> B. Que su presión, volumen y temperatura no cambian.</label><br>
+            <label><input type="radio" name="q18" value="incorrecto" required> C. Que su volumen es constante.</label><br>
+            <label><input type="radio" name="q18" value="incorrecto" required> D. Que no se comporta como un gas ideal.</label>
+        </div>
+    </div>
+
+    <!-- Indicador 4.7 -->
+    <h2>Indicador 4.7: Ecuaciones de estado de los Gases Ideales</h2>
+    <div class="question">
+        <label>19. Un gas ideal ocupa 10 L a una presión de 2 atm y una temperatura de 300 K. ¿Qué cantidad de gas hay en moles?</label>
+        <div class="options">
+            <label><input type="radio" name="q19" value="correcto" required> A. 0.81 moles.</label><br>
+            <label><input type="radio" name="q19" value="incorrecto" required> B. 2.5 moles.</label><br>
+            <label><input type="radio" name="q19" value="incorrecto" required> C. 1.0 moles.</label><br>
+            <label><input type="radio" name="q19" value="incorrecto" required> D. 0.5 moles.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>20. ¿Cómo afecta la presión a un gas ideal si el volumen y la cantidad de gas permanecen constantes pero la temperatura aumenta?</label>
+        <div class="options">
+            <label><input type="radio" name="q20" value="correcto" required> A. La presión aumenta.</label><br>
+            <label><input type="radio" name="q20" value="incorrecto" required> B. La presión disminuye.</label><br>
+            <label><input type="radio" name="q20" value="incorrecto" required> C. La presión permanece constante.</label><br>
+            <label><input type="radio" name="q20" value="incorrecto" required> D. La presión se reduce a cero.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>21. ¿Qué sucede con el volumen de un gas ideal si la presión aumenta mientras la temperatura y la cantidad de gas permanecen constantes?</label>
+        <div class="options">
+            <label><input type="radio" name="q21" value="correcto" required> A. El volumen disminuye.</label><br>
+            <label><input type="radio" name="q21" value="incorrecto" required> B. El volumen aumenta.</label><br>
+            <label><input type="radio" name="q21" value="incorrecto" required> C. El volumen permanece constante.</label><br>
+            <label><input type="radio" name="q21" value="incorrecto" required> D. El volumen se duplica.</label>
+        </div>
+    </div>
+
+    <!-- Indicador 4.8 -->
+    <h2>Indicador 4.8: Primera Ley de la Termodinámica</h2>
+    <div class="question">
+        <label>22. ¿Qué establece la primera Ley de la Termodinámica?</label>
+        <div class="options">
+            <label><input type="radio" name="q22" value="correcto" required> A. La energía interna de un sistema aumenta si se le añade calor o se le realiza trabajo.</label><br>
+            <label><input type="radio" name="q22" value="incorrecto" required> B. La energía interna de un sistema disminuye si se le añade calor o se le realiza trabajo.</label><br>
+            <label><input type="radio" name="q22" value="incorrecto" required> C. La energía interna de un sistema permanece constante independientemente del calor añadido o del trabajo realizado.</label><br>
+            <label><input type="radio" name="q22" value="incorrecto" required> D. La energía interna de un sistema no está relacionada con el calor ni con el trabajo.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>23. Un sistema recibe 500 J de calor y realiza 200 J de trabajo. ¿Cómo cambia su energía interna?</label>
+        <div class="options">
+            <label><input type="radio" name="q23" value="correcto" required> A. Aumenta en 300 J.</label><br>
+            <label><input type="radio" name="q23" value="incorrecto" required> B. Aumenta en 700 J.</label><br>
+            <label><input type="radio" name="q23" value="incorrecto" required> C. Disminuye en 300 J.</label><br>
+            <label><input type="radio" name="q23" value="incorrecto" required> D. Permanece constante.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>24. Un sistema pierde 400 J de energía interna mientras recibe 100 J de calor. ¿Cuánto trabajo ha realizado?</label>
+        <div class="options">
+            <label><input type="radio" name="q24" value="correcto" required> A. 500 J.</label><br>
+            <label><input type="radio" name="q24" value="incorrecto" required> B. 300 J.</label><br>
+            <label><input type="radio" name="q24" value="incorrecto" required> C. 100 J.</label><br>
+            <label><input type="radio" name="q24" value="incorrecto" required> D. 0 J.</label>
+        </div>
+    </div>
+
+    <!-- Indicador 4.9 -->
+    <h2>Indicador 4.9: Sistemas termodinámicos abiertos y cerrados</h2>
+    <div class="question">
+        <label>25. ¿Qué caracteriza a un sistema termodinámico cerrado?</label>
+        <div class="options">
+            <label><input type="radio" name="q25" value="correcto" required> A. No intercambia materia con su entorno, pero sí energía.</label><br>
+            <label><input type="radio" name="q25" value="incorrecto" required> B. Intercambia materia y energía con su entorno.</label><br>
+            <label><input type="radio" name="q25" value="incorrecto" required> C. No intercambia ni materia ni energía con su entorno.</label><br>
+            <label><input type="radio" name="q25" value="incorrecto" required> D. Solo intercambia materia, pero no energía con su entorno.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>26. ¿Cuál de las siguientes es una característica de un sistema abierto?</label>
+        <div class="options">
+            <label><input type="radio" name="q26" value="correcto" required> A. Intercambia materia y energía con su entorno.</label><br>
+            <label><input type="radio" name="q26" value="incorrecto" required> B. No intercambia ni materia ni energía con su entorno.</label><br>
+            <label><input type="radio" name="q26" value="incorrecto" required> C. Solo intercambia energía, pero no materia con su entorno.</label><br>
+            <label><input type="radio" name="q26" value="incorrecto" required> D. Solo intercambia materia, pero no energía con su entorno.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>27. ¿Qué ocurre en un sistema cerrado cuando se añade calor?</label>
+        <div class="options">
+            <label><input type="radio" name="q27" value="correcto" required> A. Aumenta su energía interna.</label><br>
+            <label><input type="radio" name="q27" value="incorrecto" required> B. Aumenta su masa.</label><br>
+            <label><input type="radio" name="q27" value="incorrecto" required> C. Disminuye su energía interna.</label><br>
+            <label><input type="radio" name="q27" value="incorrecto" required> D. Disminuye su masa.</label>
+        </div>
+    </div>
+
+    <!-- Indicador 4.10 -->
+    <h2>Indicador 4.10: Procesos termodinámicos (PVT)</h2>
+    <div class="question">
+        <label>28. ¿Qué caracteriza a un proceso isotérmico?</label>
+        <div class="options">
+            <label><input type="radio" name="q28" value="correcto" required> A. La temperatura permanece constante.</label><br>
+            <label><input type="radio" name="q28" value="incorrecto" required> B. La presión permanece constante.</label><br>
+            <label><input type="radio" name="q28" value="incorrecto" required> C. El volumen permanece constante.</label><br>
+            <label><input type="radio" name="q28" value="incorrecto" required> D. El calor no se transfiere.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>29. ¿Qué ocurre en un proceso isobárico?</label>
+        <div class="options">
+            <label><input type="radio" name="q29" value="correcto" required> A. La presión permanece constante mientras el volumen cambia.</label><br>
+            <label><input type="radio" name="q29" value="incorrecto" required> B. El volumen permanece constante mientras la presión cambia.</label><br>
+            <label><input type="radio" name="q29" value="incorrecto" required> C. La temperatura permanece constante.</label><br>
+            <label><input type="radio" name="q29" value="incorrecto" required> D. El calor no se transfiere.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>30. ¿Qué sucede en un proceso adiabático?</label>
+        <div class="options">
+            <label><input type="radio" name="q30" value="correcto" required> A. No hay transferencia de calor hacia dentro o fuera del sistema.</label><br>
+            <label><input type="radio" name="q30" value="incorrecto" required> B. El volumen permanece constante.</label><br>
+            <label><input type="radio" name="q30" value="incorrecto" required> C. La temperatura permanece constante.</label><br>
+            <label><input type="radio" name="q30" value="incorrecto" required> D. La presión permanece constante.</label>
+        </div>
+    </div>
+
+    <!-- Indicador 4.11 -->
+    <h2>Indicador 4.11: Energía interna y capacidad calorífica</h2>
+    <div class="question">
+        <label>31. ¿Qué es la energía interna de un sistema?</label>
+        <div class="options">
+            <label><input type="radio" name="q31" value="correcto" required> A. Es la suma de las energías cinética y potencial de las partículas que componen el sistema.</label><br>
+            <label><input type="radio" name="q31" value="incorrecto" required> B. Es la energía térmica que el sistema puede intercambiar con su entorno.</label><br>
+            <label><input type="radio" name="q31" value="incorrecto" required> C. Es la cantidad de trabajo que el sistema puede realizar.</label><br>
+            <label><input type="radio" name="q31" value="incorrecto" required> D. Es la cantidad de calor que el sistema puede absorber.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>32. ¿Qué es la capacidad calorífica de una sustancia?</label>
+        <div class="options">
+            <label><input type="radio" name="q32" value="correcto" required> A. Es la cantidad de calor necesaria para aumentar la temperatura de una cantidad dada de sustancia en un grado.</label><br>
+            <label><input type="radio" name="q32" value="incorrecto" required> B. Es la cantidad de calor necesaria para mantener constante la temperatura de una sustancia.</label><br>
+            <label><input type="radio" name="q32" value="incorrecto" required> C. Es la cantidad de calor necesaria para cambiar el estado de una sustancia.</label><br>
+            <label><input type="radio" name="q32" value="incorrecto" required> D. Es la cantidad de calor necesaria para reducir la temperatura de una sustancia en un grado.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>33. ¿Qué ocurre con la energía interna de un gas cuando se calienta a volumen constante?</label>
+        <div class="options">
+            <label><input type="radio" name="q33" value="correcto" required> A. Aumenta.</label><br>
+            <label><input type="radio" name="q33" value="incorrecto" required> B. Disminuye.</label><br>
+            <label><input type="radio" name="q33" value="incorrecto" required> C. Permanece constante.</label><br>
+            <label><input type="radio" name="q33" value="incorrecto" required> D. Se convierte en energía cinética.</label>
+        </div>
+    </div>
+
+    <!-- Indicador 4.12 -->
+    <h2>Indicador 4.12: Segunda Ley de la Termodinámica</h2>
+    <div class="question">
+        <label>34. ¿Qué establece la segunda Ley de la Termodinámica?</label>
+        <div class="options">
+            <label><input type="radio" name="q34" value="correcto" required> A. La entropía de un sistema aislado siempre tiende a aumentar.</label><br>
+            <label><input type="radio" name="q34" value="incorrecto" required> B. La energía no se crea ni se destruye, solo se transforma.</label><br>
+            <label><input type="radio" name="q34" value="incorrecto" required> C. El calor siempre fluye de cuerpos fríos a cuerpos calientes.</label><br>
+            <label><input type="radio" name="q34" value="incorrecto" required> D. Un sistema en equilibrio térmico permanece en equilibrio para siempre.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>35. ¿Qué ocurre con la entropía de un sistema aislado cuando se produce un proceso irreversible?</label>
+        <div class="options">
+            <label><input type="radio" name="q35" value="correcto" required> A. Aumenta.</label><br>
+            <label><input type="radio" name="q35" value="incorrecto" required> B. Disminuye.</label><br>
+            <label><input type="radio" name="q35" value="incorrecto" required> C. Permanece constante.</label><br>
+            <label><input type="radio" name="q35" value="incorrecto" required> D. Se convierte en energía interna.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>36. ¿Qué implica la segunda Ley de la Termodinámica para los procesos de transferencia de calor?</label>
+        <div class="options">
+            <label><input type="radio" name="q36" value="correcto" required> A. Que el calor fluye espontáneamente de cuerpos calientes a cuerpos fríos.</label><br>
+            <label><input type="radio" name="q36" value="incorrecto" required> B. Que el calor fluye espontáneamente de cuerpos fríos a cuerpos calientes.</label><br>
+            <label><input type="radio" name="q36" value="incorrecto" required> C. Que el calor no fluye entre cuerpos de diferentes temperaturas.</label><br>
+            <label><input type="radio" name="q36" value="incorrecto" required> D. Que el calor fluye espontáneamente en cualquier dirección.</label>
+        </div>
+    </div>
+
+    <!-- Indicador 4.13 -->
+    <h2>Indicador 4.13: Procesos reversibles e irreversibles</h2>
+    <div class="question">
+        <label>37. ¿Qué caracteriza a un proceso reversible?</label>
+        <div class="options">
+            <label><input type="radio" name="q37" value="correcto" required> A. Puede ser revertido sin cambios en el sistema ni en su entorno.</label><br>
+            <label><input type="radio" name="q37" value="incorrecto" required> B. No puede ser revertido bajo ninguna circunstancia.</label><br>
+            <label><input type="radio" name="q37" value="incorrecto" required> C. Se acompaña siempre de una pérdida de energía.</label><br>
+            <label><input type="radio" name="q37" value="incorrecto" required> D. Implica un aumento en la entropía del sistema.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>38. ¿Qué ocurre en un proceso irreversible?</label>
+        <div class="options">
+            <label><input type="radio" name="q38" value="correcto" required> A. Se genera un aumento en la entropía del sistema y su entorno.</label><br>
+            <label><input type="radio" name="q38" value="incorrecto" required> B. El proceso puede revertirse sin cambios en el sistema.</label><br>
+            <label><input type="radio" name="q38" value="incorrecto" required> C. El proceso siempre genera trabajo útil.</label><br>
+            <label><input type="radio" name="q38" value="incorrecto" required> D. La entropía del sistema permanece constante.</label>
+        </div>
+    </div>
+
+    <div class="question">
+        <label>39. ¿Cuál de los siguientes es un ejemplo de proceso irreversible?</label>
+        <div class="options">
+            <label><input type="radio" name="q39" value="correcto" required> A. La expansión libre de un gas en un recipiente vacío.</label><br>
+            <label><input type="radio" name="q39" value="incorrecto" required> B. La compresión lenta de un gas en un cilindro.</label><br>
+            <label><input type="radio" name="q39" value="incorrecto" required> C. El ciclo de Carnot realizado de forma ideal.</label><br>
+            <label><input type="radio" name="q39" value="incorrecto" required> D. El enfriamiento lento de un objeto caliente en un ambiente frío.</label>
+        </div>
+    </div>
+
+    <!-- Indicador 4.14 -->
+    <h2>Indicador 4.14: Ciclo de Carnot</h2>
+    <div class="question">
+        <label>40. ¿Qué es el ciclo de Carnot?</label>
+        <div class="options">
+            <label><input type="radio" name="q40" value="correcto" required> A. Un ciclo termodinámico ideal que proporciona la máxima eficiencia posible entre dos fuentes de temperatura.</label><br>
+            <label><input type="radio" name="q40" value="incorrecto" required> B. Un ciclo termodinámico real que funciona en todas las condiciones.</label><br>
+            <label><input type="radio" name="q40" value="incorrecto" required> C. Un proceso adiabático que siempre aumenta la entropía.</label><br>
+            <label><input type="radio" name="q40" value="incorrecto" required> D. Un ciclo que siempre genera más trabajo del que consume.</label>
+        </div>
+    </div>
+
+    <button class="submit-btn" onclick="calculateGrade()">Obtener Calificación</button>
+</div>
+
+<div class="popup" id="finalPopup" style="display: none;">
+    <div class="popup-content">
+        <h2>Resultado de la Evaluación</h2>
+        <p id="nombreFinal"></p>
+        <p id="nieFinal"></p>
+        <p id="gradeFinal"></p>
+        <button onclick="closePopup()">Cerrar</button>
+    </div>
+</div>
+
+<script>
+    const authorizedNIEs = [
+        "4839280", "19711634", "4839293", "6297544", "19711644",
+        "3850927", "19711635", "4267835", "3293986", "19711278",
+        "19711637", "4267839", "19806177", "4839298", "4267832",
+        "4267843", "4839279", "4839301", "19964688"
+    ];
+
+    let timer;
+    let totalSeconds = 1800;
+
+    window.onload = function() {
+        document.getElementById('popup').style.display = 'flex';
+    };
+
+    function validatePopup() {
+        const nombre = document.getElementById('nombre').value;
+        const nie = document.getElementById('nie').value;
+
+        if (nombre === "" || nie === "") {
+            alert("Por favor, complete todos los campos.");
+        } else if (!authorizedNIEs.includes(nie)) {
+            alert("NIE no autorizado.");
+        } else {
+            document.getElementById('popup').style.display = 'none';
+            document.getElementById('evaluation').style.display = 'block';
+            startTimer();
         }
+    }
 
-        function loadQuiz() {
-            const quizContainer = document.getElementById('quiz');
-            quizContainer.innerHTML = '';
-            quizData.forEach((data, index) => {
-                const questionContainer = document.createElement('div');
-                questionContainer.className = 'question';
+    function startTimer() {
+        timer = setInterval(function() {
+            totalSeconds--;
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            document.getElementById('timer').textContent = `Tiempo restante: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 
-                const questionTitle = document.createElement('h3');
-                questionTitle.innerText = `${index + 1}. ${data.question}`;
-                questionContainer.appendChild(questionTitle);
-
-                const optionsList = document.createElement('ul');
-                optionsList.className = 'options';
-
-                shuffle(data.answers).forEach(answer => {
-                    const option = document.createElement('li');
-                    const optionLabel = document.createElement('label');
-                    const optionInput = document.createElement('input');
-                    optionInput.type = 'radio';
-                    optionInput.name = `question${index}`;
-                    optionInput.value = answer.correct;
-                    optionLabel.appendChild(optionInput);
-                    optionLabel.appendChild(document.createTextNode(answer.text));
-                    option.appendChild(optionLabel);
-                    optionsList.appendChild(option);
-                });
-
-                questionContainer.appendChild(optionsList);
-                quizContainer.appendChild(questionContainer);
-            });
-        }
-
-        function submitQuiz() {
-            if (attempt >= maxAttempts) {
-                alert('Has alcanzado el número máximo de intentos.');
-                return;
+            if (totalSeconds <= 0) {
+                clearInterval(timer);
+                calculateGrade();
             }
+        }, 1000);
+    }
 
-            const resultsContainer = document.getElementById('results');
-            const answers = document.querySelectorAll('input[type="radio"]:checked');
-            let score = 0;
+    function calculateGrade() {
+        const totalQuestions = document.querySelectorAll('.question').length;
+        const correctAnswers = document.querySelectorAll('input[type="radio"]:checked[value="correcto"]').length;
+        const maxPoints = 10;
+        const grade = (correctAnswers / totalQuestions) * maxPoints;
 
-            quizData.forEach((data, index) => {
-                const selected = answers[index] ? answers[index].value === 'true' : null;
-                if (selected === true) {
-                    score += 0.4; // Each correct answer is worth 0.4 points
-                }
-            });
+        document.getElementById('nombreFinal').textContent = "Nombre: " + document.getElementById('nombre').value;
+        document.getElementById('nieFinal').textContent = "NIE: " + document.getElementById('nie').value;
+        document.getElementById('gradeFinal').textContent = "Su calificación es: " + grade.toFixed(2) + " de " + maxPoints;
 
-            score = Math.round(score * 10) / 10; // Round to one decimal place
-            let feedback = quizData.map((data, index) => {
-                const selected = answers[index] ? answers[index].value === 'true' : null;
-                let result;
-                if (selected === null) {
-                    result = "No contestada";
-                } else if (selected === true) {
-                    result = "Correcta";
-                } else {
-                    result = "Incorrecta";
-                }
-                return `<p>${index + 1}. ${result}</p>`;
-            }).join("");
+        document.getElementById('finalPopup').style.display = 'flex';
+    }
 
-            resultsContainer.innerHTML = `<h3>Resultados:</h3><p>Puntaje: ${score} / 10</p>${feedback}`;
+    function closePopup() {
+        document.getElementById('finalPopup').style.display = 'none';
+    }
+</script>
 
-            attempt++;
-            if (attempt >= maxAttempts) {
-                alert('Has alcanzado el número máximo de intentos.');
-            }
-        }
-
-        document.getElementById('submit').addEventListener('click', submitQuiz);
-
-        loadQuiz();
-    </script>
 </body>
 </html>
-
